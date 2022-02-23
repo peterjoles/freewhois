@@ -11,7 +11,7 @@ function findRDAPUrl(domain) {
     if (!domain) {
         throw new Error("You must enter a domain");
     }
-    const tld = domain.split(".")[domain.split(".").length -1];
+    const tld = domain.split(".")[domain.split(".").length - 1];
     if (!tld || tld === "") {
         throw new Error("Error parsing domain");
     }
@@ -39,11 +39,16 @@ async function whois(domain) {
             if (err || response === "" || response === "''") {
                 reject(`Error making WHOIS request for domain: ${domain}`);
             } else {
-                resolve(JSON.parse(response));
+                try {
+                    let parsedResponse = JSON.parse(response);
+                    resolve(parsedResponse);
+                } catch (_error) {
+                    reject(`Unable to parse WHOIS response for domain: ${domain}`);
+                }
             }
         });
     });
-    
+
 }
 
 module.exports = whois;
